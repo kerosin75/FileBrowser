@@ -160,7 +160,7 @@ function updateServeState(data)
 			$("#status").hide();
 			html = "<a href='external/" + data["file"] + "'><img src='movie.png' width='250px' /></a>"
 			html += "<p/>"
-			html += "<a href='http://anmoll.noip.me:65000/" + data["file"] + "'><img src='movieExt.png' width='250px' /></a>"
+			html += "<a href='http://" + privateURL + "/" + data["file"] + "'><img src='movieExt.png' width='250px' /></a>"
 			$("#result").html(html);
 		}
 	}
