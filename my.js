@@ -58,6 +58,9 @@ function createItem(p, label, depth) {
 		s += "<div class='material-icons btn' onclick=\"play('" + p + "','" + label + "',true)\">tv</div>";
 	}
 
+	if (!label.match(/(data|german|movies|serien)/))
+		s += "<div class='material-icons btn' onclick=\"searchWeb('"+label+"')\">search</div>";
+
 	s += "</div></div>";
 	$('#data').append(s);
 }
@@ -136,6 +139,14 @@ function fetchServeState()
 
 function play(path)
 {
+	// leider kein zugriff auf file möglich von JS
+	if (false && path.indexOf("cloud:") != null)
+	{
+		path = path.replace("/data/", "file:///z:/");
+		window.open(path);
+		return;
+	}
+
 	path=encodeURI(path);
 	$.ajax({
 			  url: "cgi/play.rb?path=" + path,
@@ -174,6 +185,17 @@ function updateServeState(data)
 		$("#status").text(msg);
 	}
 
+}
+
+function searchWeb(label, path)
+{
+	label = label.toLowerCase();
+	label = label.replace(/(german|720p|1080p|ac3|bdrip|[(]|xvid|mkv|avi|dts|extended|proper|dvd|mp4|bdrip|brrip|blueray|264|multi|webrip).*/g, ""); 
+	label = label.replace(/[.]/g, " ");
+	label = label.trim();
+	label = encodeURI(label);
+	var url =  "https://www.imdb.com/find?ref_=nv_sr_fn&q=" + label + "&s=tt";
+	window.open(url, '_blank');
 }
 
 
