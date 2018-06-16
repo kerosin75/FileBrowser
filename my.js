@@ -37,14 +37,16 @@ function createItem(p, label, depth) {
 	var isDir = p.endsWith("/");
 	if (isDir)
 			s += "dir";
+	else
+			s += "file";
 	s += "' ";
 	if (depth > 0)
 		s+= "style='padding-left:" + (depth * 15) + "px'"; 
 
 	var	l = label.trunc(40);
 		
-	s +=">" + l + "</div>";
-	s += "<div class='divTableCell buttons'>";
+	s +="><div class='text'>" + l+"</div>";
+	// s += "<div class='divTableCell buttons'>";
 	if (isDir)
 		s += btn("fetch('" + p + "')", "arrow_forward");
 	else
@@ -57,7 +59,7 @@ function createItem(p, label, depth) {
 	if (!label.match(/(data|german|movies|serien)/))
 		s += btn("searchWeb('"+label+"')","search");
 
-	s += "</div></div>";
+	s += "</div>";
 	$('#data').append(s);
 }
 
@@ -116,9 +118,7 @@ function update(data)
 
 function fetch(path)
 {
-	console.log(path);
 	path=encodeURIComponent(path);
-	console.log(path);
 	$.ajax({
 			  url: "cgi/files.rb?path=" + path,
 				context: document.body,
@@ -171,7 +171,7 @@ function updateServeState(data)
 			$("#result").show();
 			$("#status").hide();
 			html = "<a href='external/" + data["file"] + "'><img src='movie.png' width='250px' /></a>"
-			html += "<p/>"
+			html += "<br/>"
 			html += "<a href='http://" + privateURL + "/" + data["file"] + "'><img src='movieExt.png' width='250px' /></a>"
 			$("#result").html(html);
 		}
