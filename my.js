@@ -46,7 +46,6 @@ function createItem(p, label, depth) {
 	var	l = label.trunc(40);
 		
 	s +="><div class='text'>" + l+"</div>";
-	// s += "<div class='divTableCell buttons'>";
 	if (isDir)
 		s += btn("fetch('" + p + "')", "arrow_forward");
 	else
