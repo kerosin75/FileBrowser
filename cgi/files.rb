@@ -3,6 +3,12 @@
 require "cgi"
 require 'json'
 
+IGNORED = [ "sub", "idx", "srt", "nfo" ]
+
+def isIgnored(s)
+	return IGNORED.include?(s.split(".")[-1])
+end
+
 puts "Content-type: text/html\n\n";
 cgi = CGI.new
 path = cgi['path']
@@ -21,7 +27,7 @@ if path == "/data"
 else
 	entries = Dir.entries(path).select {|f| !f.start_with?(".")}
 	data["dirs"] = entries.select {|f| File.directory?(path + "/" + f) }.sort
-	data["files"] = entries.select {|f| File.file?(path + "/" + f) }.sort
+	data["files"] = entries.select {|f| File.file?(path + "/" + f) && !isIgnored(f) }.sort
 end
 
 

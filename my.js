@@ -26,7 +26,8 @@ function getUrlParameter(name) {
 
 String.prototype.trunc = String.prototype.trunc ||
       function(n){
-				return (this.length > n) ? this.substr(0, n-1) + '...' : this;
+				if (this.length <= n) return this;
+				return this.substr(0, n-1) + '...';
 			};
 
 function createItem(p, label, depth) {
@@ -41,34 +42,34 @@ function createItem(p, label, depth) {
 		s+= "style='padding-left:" + (depth * 15) + "px'"; 
 
 	var	l = label.trunc(40);
-	if (l != label)
-	{
-		var fs = label.split(".");
-		l += fs[fs.length -1];
-	}
 		
 	s +=">" + l + "</div>";
 	s += "<div class='divTableCell buttons'>";
 	if (isDir)
-		s += "<div class='material-icons btn' onclick=\"fetch('" + p + "')\"> arrow_forward</div>";
+		s += btn("fetch('" + p + "')", "arrow_forward");
 	else
 	{
-		s += "<div class='material-icons btn' onclick=\"serve('" + p + "','" + label + "')\">arrow_right</div>";
-		s += "<div class='material-icons btn' onclick=\"serve('" + p + "','" + label + "',true)\">cloud</div>";
-		s += "<div class='material-icons btn' onclick=\"play('" + p + "','" + label + "',true)\">tv</div>";
+		s += btn("serve('" + p + "','" + label + "')", "arrow_right");
+		s += btn("serve('" + p + "','" + label + "',true)", "cloud");
+		s += btn("play('" + p + "','" + label + "',true)", "tv");
 	}
 
 	if (!label.match(/(data|german|movies|serien)/))
-		s += "<div class='material-icons btn' onclick=\"searchWeb('"+label+"')\">search</div>";
+		s += btn("searchWeb('"+label+"')","search");
 
 	s += "</div></div>";
 	$('#data').append(s);
 }
 
+function btn(action, icon)
+{
+	return "<div class='material-icons btn' onclick=\"" + action + "\">" + icon + "</div>";
+}
+
 function serve(path, label, org)
 {
-	path=encodeURI(path);
-	label=encodeURI(label);
+	path=encodeURIComponent(path);
+	label=encodeURIComponent(label);
 	window.open("serve.html?path=" + path + "&label=" + label + "&org=" + org);
 }
 
@@ -101,7 +102,6 @@ function update(data)
 		var d = files[i];
 		var s = path + "/" + d;
 		var l = d;
-		console.log(l, p);
 		if (l.startsWith(p))
 			l = l.substring(p.length);
 
@@ -116,8 +116,9 @@ function update(data)
 
 function fetch(path)
 {
-	path=encodeURI(path);
-	console.log("fetch: " + path);
+	console.log(path);
+	path=encodeURIComponent(path);
+	console.log(path);
 	$.ajax({
 			  url: "cgi/files.rb?path=" + path,
 				context: document.body,
@@ -129,7 +130,7 @@ function fetchServeState()
 {
 	var path = getUrlParameter("path");
 	var org = getUrlParameter("org");
-	path=encodeURI(path);
+	path=encodeURIComponent(path);
 	$.ajax({
 			  url: "cgi/serve.rb?path=" + path + "&org=" + org,
 				context: document.body,
@@ -147,7 +148,7 @@ function play(path)
 		return;
 	}
 
-	path=encodeURI(path);
+	path=encodeURIComponent(path);
 	$.ajax({
 			  url: "cgi/play.rb?path=" + path,
 				context: document.body,
@@ -193,7 +194,7 @@ function searchWeb(label, path)
 	label = label.replace(/(german|720p|1080p|ac3|bdrip|[(]|xvid|mkv|avi|dts|extended|proper|dvd|mp4|bdrip|brrip|blueray|264|multi|webrip).*/g, ""); 
 	label = label.replace(/[.]/g, " ");
 	label = label.trim();
-	label = encodeURI(label);
+	label = encodeURIComponent(label);
 	var url =  "https://www.imdb.com/find?ref_=nv_sr_fn&q=" + label + "&s=tt";
 	window.open(url, '_blank');
 }

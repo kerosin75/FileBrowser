@@ -10,4 +10,4 @@ puts "Content-type: text/html\n\n";
 cgi = CGI.new
 path = cgi['path']
 
-system("/home/kerosin/bin/playMovie '" + path + "'")
+system("sudo -u kerosin /home/kerosin/bin/playMovie '" + path + "'")
