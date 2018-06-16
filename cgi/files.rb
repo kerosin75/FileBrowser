@@ -6,7 +6,24 @@ require 'json'
 IGNORED = [ "sub", "idx", "srt", "nfo" ]
 
 def isIgnored(s)
-	return IGNORED.include?(s.split(".")[-1])
+	IGNORED.include?(s.split(".")[-1])
+end
+
+def filterDir(f)
+	return !f.end_with?("seen") && File.directory?(f) 
+end
+
+def filterFile(f)
+	!isIgnored(f) && File.file?(f) 
+end
+
+def recode(f)
+#f.force_encoding("ISO-8859-1").encode("UTF-8")
+	f.to_s
+end
+
+def select(entries, path, callback)
+	return entries.select {|f| callback.call(path + "/" + f) }.map{|f|recode(f)}.sort
 end
 
 puts "Content-type: text/html\n\n";
@@ -26,8 +43,8 @@ if path == "/data"
 	data["dirs"] = [ "german", "movies", "serien"]
 else
 	entries = Dir.entries(path).select {|f| !f.start_with?(".")}
-	data["dirs"] = entries.select {|f| File.directory?(path + "/" + f) }.sort
-	data["files"] = entries.select {|f| File.file?(path + "/" + f) && !isIgnored(f) }.sort
+	data["dirs"] = select(entries, path, method(:filterDir))
+	data["files"] = select(entries, path, method(:filterFile))
 end
 
 
