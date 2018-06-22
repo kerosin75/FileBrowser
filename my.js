@@ -44,6 +44,9 @@ function createItem(p, label, depth) {
 		s+= "style='padding-left:" + (depth * 15) + "px'"; 
 
 	var	l = label.trunc(40);
+
+	p = p.replace("'", "\\'");
+	label = label.replace("'", "");
 		
 	s +="><div class='text'>" + l+"</div>";
 	if (isDir)
