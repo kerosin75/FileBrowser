@@ -111,7 +111,7 @@ function update(data)
 
 		l = l.trim();
 
-		if (l.startsWith("-"))
+		if (l.startsWith("-") || l.startsWith("."))
 			l = l.substring(1).trim();
 
 		createItem(s, l, ps.length);
